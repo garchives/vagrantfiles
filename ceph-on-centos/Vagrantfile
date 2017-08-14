@@ -5,7 +5,7 @@
 ceph_num_nodes = 2
 
 # 虚拟网段
-network = "172.1.72"
+network = "172.72.1"
 
 # ceph 发行版
 ceph_release = "jewel"
@@ -30,36 +30,36 @@ Vagrant.configure("2") do |config|
   # 所有节点安装 net-tools
   config.vm.provision "shell", privileged: true, inline: "yum install -y net-tools"
 
-  # ceph-server（先启动 ceph-server，以便 ceph-admin 部署 ceph）
-  (1..ceph_num_nodes).each do |index|
-    config.vm.define "ceph-node-#{index}" do |conf|
-      conf.vm.hostname = "ceph-node-#{index}"
-      conf.vm.network :private_network, ip: "#{network}.#{index+10}"
-
-      config.vm.provider "virtualbox" do |vbox|
-        vbox.name = "ceph-node-#{index}"
-        vbox.cpus = 1
-        vbox.memory = "512"
-      end
-    end
-  end
-
   # ceph-admin
   config.vm.define "ceph-admin" do |conf|
     conf.vm.hostname = "ceph-admin"
     conf.vm.network :private_network, ip: "#{network}.10"
 
-    config.vm.provider "virtualbox" do |vbox|
+    conf.vm.provider "virtualbox" do |vbox|
       vbox.name = "ceph-admin"
       vbox.cpus = 1
       vbox.memory = "256"
     end
 
     # 安装　ceph-deploy （privileged: true 相当于使用了 sudo，也就是 root 用户）
-    config.vm.provision "ceph-deploy", type: "shell", privileged: true, path: "ceph-deploy.sh", args: ceph_release
+    conf.vm.provision "ceph-deploy", type: "shell", privileged: true, path: "ceph-deploy.sh", args: ceph_release
 
     # 部署集群（不使用 root 用户，因为只有 vagrant 用户才可以免密钥登录）
     conf.vm.provision "ceph-cluster", type: "shell", privileged: false, path: "ceph-cluster.sh", args: "#{ceph_release} #{ceph_num_nodes}"
-  end  
+  end 
+
+  # ceph-server（先启动 ceph-server，以便 ceph-admin 部署 ceph）
+  (1..ceph_num_nodes).each do |index|
+    config.vm.define "ceph-node-#{index}" do |conf|
+      conf.vm.hostname = "ceph-node-#{index}"
+      conf.vm.network :private_network, ip: "#{network}.#{index+10}"
+
+      conf.vm.provider "virtualbox" do |vbox|
+        vbox.name = "ceph-node-#{index}"
+        vbox.cpus = 1
+        vbox.memory = "512"
+      end
+    end
+  end
 
 end

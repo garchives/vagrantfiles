@@ -2,13 +2,20 @@
 
 `vagrant up` 启动虚拟机后默认会在所有节点安装并部署好相应的 ceph 服务。由于使用 `ceph-deploy install` 命令来安装 ceph 总是失败，所以改用源的方式来安装。
 
+## 系统环境
+
+  * Centos 7.3.1611
+  * Kernel 3.10.0-514.26.2
+  * Ceph 10.2.x
+
+
 ## 集群分布
 
-hostname      | ip            | role          | components |
-------------- | ------------- | ------------- | -------------
-ceph-admin    | 172.1.72.10   | ceph-mon radosgw  | ceph ceph-radosgw ceph-deploy |
-ceph-server-1 | 172.1.72.11   | ceph-mon ceph-osd | ceph |
-ceph-server-2 | 172.1.72.12   | ceph-mon ceph-osd | ceph |
+hostname      | ip          | role              | components    |
+------------- | ----------- | ----------------- | ------------- |
+ceph-admin    | 172.72.1.10 | ceph-mon radosgw  | ceph ceph-radosgw ceph-deploy |
+ceph-server-1 | 172.72.1.11 | ceph-mon ceph-osd | ceph |
+ceph-server-2 | 172.72.1.12 | ceph-mon ceph-osd | ceph |
 
 其中，上面的 ceph 包括 ceph-base、ceph-common、ceph-selinux、ceph-osd、ceph-mon、ceph-osd、ceph-mds 等组件（`rpm -qa | grep ceph*`）。
 
@@ -66,7 +73,6 @@ tcp        0      0 172.1.72.10:6789        0.0.0.0:*               LISTEN      
 $ vagrant ssh ceph-server-1
 [vagrant@ceph-server-1 ~]$ ceph -s
 [vagrant@ceph-server-1 ~]$ 
-[vagrant@ceph-server-1 ~]$ 
 [vagrant@ceph-server-1 ~]$ sudo netstat -tpln | grep ceph*
 tcp        0      0 0.0.0.0:6800            0.0.0.0:*               LISTEN      5574/ceph-osd       
 tcp        0      0 0.0.0.0:6801            0.0.0.0:*               LISTEN      5574/ceph-osd       
@@ -79,3 +85,4 @@ tcp        0      0 172.1.72.11:6789        0.0.0.0:*               LISTEN      
 ## 参考
 
   * [codedellemc/vagrant - GitHub](https://github.com/codedellemc/vagrant/tree/master/ceph)
+  * [Multinode Ceph on Vagrant](https://github.com/carmstrong/multinode-ceph-vagrant)
