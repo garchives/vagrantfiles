@@ -43,6 +43,11 @@ $ # 需要先安装 hostmanager 插件： vagrant plugin install vagrant-hostmanager
 $ vagrant hostmanager
 ```
 
+```bash
+$ # 如果中途部署出错，可以删除重来
+$ vagrant destroy -f
+```
+
 
 ## 校验
 
@@ -67,13 +72,13 @@ tcp        0      0 0.0.0.0:7480            0.0.0.0:*               LISTEN      
 tcp        0      0 172.1.72.10:6789        0.0.0.0:*               LISTEN      4769/ceph-mon
 ```
 
-* ceph-server
+* ceph-node
 
 ```bash
-$ vagrant ssh ceph-server-1
-[vagrant@ceph-server-1 ~]$ ceph -s
-[vagrant@ceph-server-1 ~]$ 
-[vagrant@ceph-server-1 ~]$ sudo netstat -tpln | grep ceph*
+$ vagrant ssh ceph-node-1
+[vagrant@ceph-node-1 ~]$ ceph -s
+[vagrant@ceph-node-1 ~]$ 
+[vagrant@ceph-node-1 ~]$ sudo netstat -tpln | grep ceph*
 tcp        0      0 0.0.0.0:6800            0.0.0.0:*               LISTEN      5574/ceph-osd       
 tcp        0      0 0.0.0.0:6801            0.0.0.0:*               LISTEN      5574/ceph-osd       
 tcp        0      0 0.0.0.0:6802            0.0.0.0:*               LISTEN      5574/ceph-osd       
